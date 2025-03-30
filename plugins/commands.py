@@ -227,7 +227,7 @@ for msg in msgs:
         filesarr.append((file, f_caption))  # Store for later processing
 
     except Exception as e:
-        await client.send_message(LOG_CHANNEL, f"❌ Error processing file: {str(e)}")sing file: {str(e)}")
+        await client.send_message(LOG_CHANNEL, f"❌ Error processing file: {str(e)}")
 
 
                 if STREAM_MODE == True:
