@@ -160,8 +160,8 @@ async def start(client, message):
         sts = await message.reply("**🔺 ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ**")
         file_id = data.split("-", 1)[1]
         msgs = BATCH_FILES.get(file_id)
-        if not msgs:
-        try:
+if not msgs:
+    try:
         decode_file_id = base64.urlsafe_b64decode(file_id + "=" * (-len(file_id) % 4)).decode("ascii")
         msg = await client.get_messages(LOG_CHANNEL, int(decode_file_id))
 
@@ -188,8 +188,8 @@ async def start(client, message):
         await client.send_message(LOG_CHANNEL, f"❌ Error processing batch: {str(e)}")
         return
 
-        filesarr = []
-    for msg in msgs:
+filesarr = []
+for msg in msgs:
     try:
         channel_id = int(msg.get("channel_id", 0))
         msgid = int(msg.get("msg_id", 0))
@@ -227,7 +227,7 @@ async def start(client, message):
         filesarr.append((file, f_caption))  # Store for later processing
 
     except Exception as e:
-        await client.send_message(LOG_CHANNEL, f"❌ Error processing file: {str(e)}")
+        await client.send_message(LOG_CHANNEL, f"❌ Error processing file: {str(e)}")sing file: {str(e)}")
 
 
                 if STREAM_MODE == True:
