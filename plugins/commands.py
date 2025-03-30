@@ -161,41 +161,75 @@ async def start(client, message):
         file_id = data.split("-", 1)[1]
         msgs = BATCH_FILES.get(file_id)
         if not msgs:
-            decode_file_id = base64.urlsafe_b64decode(file_id + "=" * (-len(file_id) % 4)).decode("ascii")
-            msg = await client.get_messages(LOG_CHANNEL, int(decode_file_id))
-            media = getattr(msg, msg.media.value)
-            file_id = media.file_id
-            file = await client.download_media(file_id)
-            try: 
-                with open(file) as file_data:
-                    msgs=json.loads(file_data.read())
-            except:
-                await sts.edit("FAILED")
-                return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
-            os.remove(file)
-            BATCH_FILES[file_id] = msgs
-            
+        try:
+        decode_file_id = base64.urlsafe_b64decode(file_id + "=" * (-len(file_id) % 4)).decode("ascii")
+        msg = await client.get_messages(LOG_CHANNEL, int(decode_file_id))
+
+        if not msg.media:
+            return await client.send_message(LOG_CHANNEL, "❌ No media found in the batch file.")
+
+        media = getattr(msg, msg.media.value, None)
+        if not media:
+            return await client.send_message(LOG_CHANNEL, "❌ Invalid media format.")
+
+        file_path = await client.download_media(media.file_id)
+
+        with open(file_path, "r") as file_data:
+            try:
+                msgs = json.load(file_data)
+            except json.JSONDecodeError:
+                await client.send_message(LOG_CHANNEL, "❌ Unable to parse batch file. Ensure it's valid JSON.")
+                return
+
+        os.remove(file_path)
+        BATCH_FILES[file_id] = msgs
+
+    except Exception as e:
+        await client.send_message(LOG_CHANNEL, f"❌ Error processing batch: {str(e)}")
+        return
+
         filesarr = []
-        for msg in msgs:
-            channel_id = int(msg.get("channel_id"))
-            msgid = msg.get("msg_id")
-            info = await client.get_messages(channel_id, int(msgid))
-            if info.media:
-                file_type = info.media
-                file = getattr(info, file_type.value)
-                f_caption = getattr(info, 'caption', '')
-                if f_caption:
-                    f_caption = f_caption.html
-                old_title = getattr(file, "file_name", "")
-                title = formate_file_name(old_title)
-                size=get_size(int(file.file_size))
-                if BATCH_FILE_CAPTION:
-                    try:
-                        f_caption=BATCH_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
-                    except:
-                        f_caption=f_caption
-                if f_caption is None:
-                    f_caption = f"{title}"
+    for msg in msgs:
+    try:
+        channel_id = int(msg.get("channel_id", 0))
+        msgid = int(msg.get("msg_id", 0))
+
+        info = await client.get_messages(channel_id, msgid)
+        if not info.media:
+            continue
+
+        file = getattr(info, info.media.value, None)
+        if not file:
+            continue
+
+        f_caption = info.caption or ""
+        if hasattr(f_caption, "html"):
+            f_caption = f_caption.html  # Ensure HTML formatting works
+
+        old_title = file.file_name or "Unknown File"
+        title = formate_file_name(old_title)
+
+        size = get_size(file.file_size or 0)
+
+        if BATCH_FILE_CAPTION:
+            try:
+                f_caption = BATCH_FILE_CAPTION.format(
+                    file_name=title or "",
+                    file_size=size or "",
+                    file_caption=f_caption or ""
+                )
+            except KeyError:
+                pass  # If formatting fails, use default caption
+
+        if not f_caption:
+            f_caption = f"{title}"
+
+        filesarr.append((file, f_caption))  # Store for later processing
+
+    except Exception as e:
+        await client.send_message(LOG_CHANNEL, f"❌ Error processing file: {str(e)}")
+
+
                 if STREAM_MODE == True:
                     if info.video or info.document:
                         log_msg = info
