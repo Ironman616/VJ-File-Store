@@ -11,7 +11,7 @@ class script(object):
 # Ask Doubt on telegram @KingVJ01
 
     
-    CAPTION = """{previouscaption} \n\n<blockquote><b>Forward this File to @MlFiletoLinkbot \n\nTo Get Fast Download & Online Streaming Links 🚀⚡️</b></blockquote>""" 
+    CAPTION = """<b><a href="https://t.me/Movie_loverzz">{file_caption}</a></b>\n\n<b>⚜️ Powered By : <a href=https://t.me/Movie_loverzz>[Movie_Loverzz]</a></b>""" 
 
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
