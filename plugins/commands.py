@@ -77,10 +77,10 @@ async def start(client, message):
                 # Check if the command has extra arguments (start parameter)
                 start_param = message.command[1] if len(message.command) > 1 else "true"
                 
-                btn.append([InlineKeyboardButton("â™»ï¸ Try Again â™»ï¸", url=f"https://t.me/{username}?start={start_param}")])
+                btn.append([InlineKeyboardButton("♻️ Try Again ♻️", url=f"https://t.me/{username}?start={start_param}")])
                 
                 await message.reply_text(
-                    text=f"<b>ðŸ‘‹ Hello {message.from_user.mention},\n\nPlease join the channel then click on the Try Again button. ðŸ˜‡</b>",
+                    text=f"<b>👋 Hello {message.from_user.mention},\n\nPlease Join the channel then click on the Try Again button.\n\n <blockquote>మీరు ఈ క్రింద ఉన్న 2 ఛానల్స్ లో తప్పకుండా జాయిన్ అవ్వాలి.. Join అయిన తర్వాత ' Try Again ' Click చేస్తే File వస్తుంది 😇</blockquote></b>",
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
                 return
@@ -92,16 +92,16 @@ async def start(client, message):
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
         buttons = [[
-            InlineKeyboardButton('ðŸ’ á´€á´á´€á´¢á´É´ & êœ°ÊŸÉªá´˜á´‹á´€Ê€á´› Ê™á´‡êœ±á´› á´êœ°êœ°á´‡Ê€êœ±', url='https://t.me/amazon_flipkartt_offers')
+            InlineKeyboardButton('💝 ᴀᴍᴀᴢᴏɴ & ꜰʟɪᴘᴋᴀʀᴛ ʙᴇꜱᴛ ᴏꜰꜰᴇʀꜱ', url='https://t.me/amazon_flipkartt_offers')
             ],[
-            InlineKeyboardButton('ðŸ” sá´œá´˜á´˜á´Ê€á´› É¢Ê€á´á´œá´˜', url='https://t.me/+7hhFYFo61m5hNzU9'),
-            InlineKeyboardButton('ðŸ¤– á´œá´˜á´…á´€á´›á´‡ á´„Êœá´€É´É´á´‡ÊŸ', url='https://t.me/movie_loverzz')
+            InlineKeyboardButton('🔍 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ', url='https://t.me/+7hhFYFo61m5hNzU9'),
+            InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/movie_loverzz')
             ],[
-            InlineKeyboardButton('ðŸ’â€â™€ï¸ Êœá´‡ÊŸá´˜', callback_data='help'),
-            InlineKeyboardButton('ðŸ˜Š á´€Ê™á´á´œá´›', callback_data='about')
+            InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
+            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about')
         ]]
         if CLONE_MODE == True:
-            buttons.append([InlineKeyboardButton('ðŸ¤– á´„Ê€á´‡á´€á´›á´‡ Êá´á´œÊ€ á´á´¡É´ á´„ÊŸá´É´á´‡ Ê™á´á´›', callback_data='clone')])
+            buttons.append([InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
         reply_markup = InlineKeyboardMarkup(buttons)
         me = client.me
         await message.reply_photo(
@@ -157,7 +157,7 @@ async def start(client, message):
                 return
         except Exception as e:
             return await message.reply_text(f"**Error - {e}**")
-        sts = await message.reply("**ðŸ”º á´˜ÊŸá´‡á´€sá´‡ á´¡á´€Éªá´›**")
+        sts = await message.reply("**🔺 ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ**")
         file_id = data.split("-", 1)[1]
         msgs = BATCH_FILES.get(file_id)
         if not msgs:
@@ -203,10 +203,10 @@ async def start(client, message):
                         stream = f"{URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                         download = f"{URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                         button = [[
-                            InlineKeyboardButton("â€¢ á´…á´á´¡É´ÊŸá´á´€á´… â€¢", url=download),
-                            InlineKeyboardButton('â€¢ á´¡á´€á´›á´„Êœ â€¢', url=stream)
+                            InlineKeyboardButton("• ᴅᴏᴡɴʟᴏᴀᴅ •", url=download),
+                            InlineKeyboardButton('• ᴡᴀᴛᴄʜ •', url=stream)
                         ],[
-                            InlineKeyboardButton("â€¢ á´¡á´€á´›á´„Êœ ÉªÉ´ á´¡á´‡Ê™ á´€á´˜á´˜ â€¢", web_app=WebAppInfo(url=stream))
+                            #InlineKeyboardButton("• ᴡᴀᴛᴄʜ ɪɴ ᴡᴇʙ ᴀᴘᴘ •", web_app=WebAppInfo(url=stream))
                         ]]
                         reply_markup=InlineKeyboardMarkup(button)
                 else:
@@ -230,7 +230,7 @@ async def start(client, message):
             await asyncio.sleep(1) 
         await sts.delete()
         if AUTO_DELETE_MODE == True:
-            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>â—ï¸â—ï¸â—ï¸IMPORTANTâ—ï¸ï¸â—ï¸â—ï¸</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> ðŸ«¥ <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
+            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
             await asyncio.sleep(AUTO_DELETE_TIME)
             for x in filesarr:
                 try:
@@ -276,10 +276,10 @@ async def start(client, message):
                     stream = f"{URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                     download = f"{URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                     button = [[
-                        InlineKeyboardButton("â€¢ á´…á´á´¡É´ÊŸá´á´€á´… â€¢", url=download),
-                        InlineKeyboardButton('â€¢ á´¡á´€á´›á´„Êœ â€¢', url=stream)
+                        InlineKeyboardButton("• ᴅᴏᴡɴʟᴏᴀᴅ •", url=download),
+                        InlineKeyboardButton('• ᴡᴀᴛᴄʜ •', url=stream)
                     ],[
-                        InlineKeyboardButton("â€¢ á´¡á´€á´›á´„Êœ ÉªÉ´ á´¡á´‡Ê™ á´€á´˜á´˜ â€¢", web_app=WebAppInfo(url=stream))
+                        #InlineKeyboardButton("• ᴡᴀᴛᴄʜ ɪɴ ᴡᴇʙ ᴀᴘᴘ •", web_app=WebAppInfo(url=stream))
                     ]]
                     reply_markup=InlineKeyboardMarkup(button)
             else:
@@ -288,7 +288,7 @@ async def start(client, message):
         else:
             del_msg = await msg.copy(chat_id=message.from_user.id, protect_content=False)
         if AUTO_DELETE_MODE == True:
-            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>â—ï¸â—ï¸â—ï¸IMPORTANTâ—ï¸ï¸â—ï¸â—ï¸</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> ðŸ«¥ <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
+            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
             await asyncio.sleep(AUTO_DELETE_TIME)
             try:
                 await del_msg.delete()
@@ -351,8 +351,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.delete()
     elif query.data == "about":
         buttons = [[
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('ðŸ”’ CÊŸá´sá´‡', callback_data='close_data')
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -373,16 +373,16 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "start":
         buttons = [[
-            InlineKeyboardButton('ðŸ’ á´€á´á´€á´¢á´É´ & êœ°ÊŸÉªá´˜á´‹á´€Ê€á´› Ê™á´‡êœ±á´› á´êœ°êœ°á´‡Ê€êœ±', url='https://t.me/amazon_flipkartt_offers')
+            InlineKeyboardButton('💝 ᴀᴍᴀᴢᴏɴ & ꜰʟɪᴘᴋᴀʀᴛ ʙᴇꜱᴛ ᴏꜰꜰᴇʀꜱ', url='https://t.me/amazon_flipkartt_offers')
         ],[
-            InlineKeyboardButton('ðŸ” sá´œá´˜á´˜á´Ê€á´› É¢Ê€á´á´œá´˜', url='https://t.me/+7hhFYFo61m5hNzU9'),
-            InlineKeyboardButton('ðŸ¤– á´œá´˜á´…á´€á´›á´‡ á´„Êœá´€É´É´á´‡ÊŸ', url='https://t.me/movie_loverzz')
+            InlineKeyboardButton('🔍 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ', url='https://t.me/+7hhFYFo61m5hNzU9'),
+            InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/movie_loverzz')
         ],[
-            InlineKeyboardButton('ðŸ’â€â™€ï¸ Êœá´‡ÊŸá´˜', callback_data='help'),
-            InlineKeyboardButton('ðŸ˜Š á´€Ê™á´á´œá´›', callback_data='about')
+            InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
+            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about')
         ]]
         if CLONE_MODE == True:
-            buttons.append([InlineKeyboardButton('ðŸ¤– á´„Ê€á´‡á´€á´›á´‡ Êá´á´œÊ€ á´á´¡É´ á´„ÊŸá´É´á´‡ Ê™á´á´›', callback_data='clone')])
+            buttons.append([InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.edit_message_media(
             query.message.chat.id, 
@@ -402,8 +402,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "clone":
         buttons = [[
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('ðŸ”’ CÊŸá´sá´‡', callback_data='close_data')
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -423,8 +423,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "help":
         buttons = [[
-            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
-            InlineKeyboardButton('ðŸ”’ CÊŸá´sá´‡', callback_data='close_data')
+            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
