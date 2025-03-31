@@ -6,7 +6,6 @@ import os
 import logging
 import random
 import asyncio
-import coroutine  # For framework interface.
 from validators import domain
 from Script import script
 from plugins.dbusers import db
@@ -78,10 +77,10 @@ async def start(client, message):
                 # Check if the command has extra arguments (start parameter)
                 start_param = message.command[1] if len(message.command) > 1 else "true"
                 
-                btn.append([InlineKeyboardButton("♻️ Try Again ♻️", url=f"https://t.me/{username}?start={start_param}")])
+                btn.append([InlineKeyboardButton("â™»ï¸ Try Again â™»ï¸", url=f"https://t.me/{username}?start={start_param}")])
                 
                 await message.reply_text(
-                    text=f"<b>👋 Hello {message.from_user.mention},\n\nPlease join the channel then click on the Try Again button. 😇</b>",
+                    text=f"<b>ðŸ‘‹ Hello {message.from_user.mention},\n\nPlease join the channel then click on the Try Again button. ðŸ˜‡</b>",
                     reply_markup=InlineKeyboardMarkup(btn)
                 )
                 return
@@ -93,16 +92,16 @@ async def start(client, message):
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT.format(message.from_user.id, message.from_user.mention))
     if len(message.command) != 2:
         buttons = [[
-            InlineKeyboardButton('💝 ᴀᴍᴀᴢᴏɴ & ꜰʟɪᴘᴋᴀʀᴛ ʙᴇꜱᴛ ᴏꜰꜰᴇʀꜱ', url='https://t.me/amazon_flipkartt_offers')
+            InlineKeyboardButton('ðŸ’ á´€á´á´€á´¢á´É´ & êœ°ÊŸÉªá´˜á´‹á´€Ê€á´› Ê™á´‡êœ±á´› á´êœ°êœ°á´‡Ê€êœ±', url='https://t.me/amazon_flipkartt_offers')
             ],[
-            InlineKeyboardButton('🔍 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ', url='https://t.me/+7hhFYFo61m5hNzU9'),
-            InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/movie_loverzz')
+            InlineKeyboardButton('ðŸ” sá´œá´˜á´˜á´Ê€á´› É¢Ê€á´á´œá´˜', url='https://t.me/+7hhFYFo61m5hNzU9'),
+            InlineKeyboardButton('ðŸ¤– á´œá´˜á´…á´€á´›á´‡ á´„Êœá´€É´É´á´‡ÊŸ', url='https://t.me/movie_loverzz')
             ],[
-            InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
-            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about')
+            InlineKeyboardButton('ðŸ’â€â™€ï¸ Êœá´‡ÊŸá´˜', callback_data='help'),
+            InlineKeyboardButton('ðŸ˜Š á´€Ê™á´á´œá´›', callback_data='about')
         ]]
         if CLONE_MODE == True:
-            buttons.append([InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
+            buttons.append([InlineKeyboardButton('ðŸ¤– á´„Ê€á´‡á´€á´›á´‡ Êá´á´œÊ€ á´á´¡É´ á´„ÊŸá´É´á´‡ Ê™á´á´›', callback_data='clone')])
         reply_markup = InlineKeyboardMarkup(buttons)
         me = client.me
         await message.reply_photo(
@@ -158,95 +157,59 @@ async def start(client, message):
                 return
         except Exception as e:
             return await message.reply_text(f"**Error - {e}**")
-        sts = await message.reply("**🔺 ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ**")
+        sts = await message.reply("**ðŸ”º á´˜ÊŸá´‡á´€sá´‡ á´¡á´€Éªá´›**")
         file_id = data.split("-", 1)[1]
         msgs = BATCH_FILES.get(file_id)
-if not msgs:
-    try:
-        decode_file_id = base64.urlsafe_b64decode(file_id + "=" * (-len(file_id) % 4)).decode("ascii")
-        msg = await client.get_messages(LOG_CHANNEL, int(decode_file_id))
-
-        if not msg.media:
-            return await client.send_message(LOG_CHANNEL, "❌ No media found in the batch file.")
-
-        media = getattr(msg, msg.media.value, None)
-        if not media:
-            return await client.send_message(LOG_CHANNEL, "❌ Invalid media format.")
-
-        file_path = await client.download_media(media.file_id)
-
-        with open(file_path, "r") as file_data:
-            try:
-                msgs = json.load(file_data)
-            except json.JSONDecodeError:
-                await client.send_message(LOG_CHANNEL, "❌ Unable to parse batch file. Ensure it's valid JSON.")
-                return
-
-        os.remove(file_path)
-        BATCH_FILES[file_id] = msgs
-
-    except Exception as e:
-        await client.send_message(LOG_CHANNEL, f"❌ Error processing batch: {str(e)}")
-        return
-
-filesarr = []
-for msg in msgs:
-    try:
-        channel_id = int(msg.get("channel_id", 0))
-        msgid = int(msg.get("msg_id", 0))
-
-        info = await client.get_messages(channel_id, msgid)
-        if not info.media:
-            continue
-
-        file = getattr(info, info.media.value, None)
-        if not file:
-            continue
-
-        f_caption = info.caption or ""
-        if hasattr(f_caption, "html"):
-            f_caption = f_caption.html  # Ensure HTML formatting works
-
-        old_title = file.file_name or "Unknown File"
-        title = formate_file_name(old_title)
-
-        size = get_size(file.file_size or 0)
-
-        if BATCH_FILE_CAPTION:
-            try:
-                f_caption = BATCH_FILE_CAPTION.format(
-                    file_name=title or "",
-                    file_size=size or "",
-                    file_caption=f_caption or ""
-                )
-            except KeyError:
-                pass  # If formatting fails, use default caption
-
-        if not f_caption:
-            f_caption = f"{title}"
-
-        filesarr.append((file, f_caption))  # Store for later processing
-
-    except Exception as e:
-        await client.send_message(LOG_CHANNEL, f"❌ Error processing file: {str(e)}")
-        
-        
-        if STREAM_MODE == True:
+        if not msgs:
+            decode_file_id = base64.urlsafe_b64decode(file_id + "=" * (-len(file_id) % 4)).decode("ascii")
+            msg = await client.get_messages(LOG_CHANNEL, int(decode_file_id))
+            media = getattr(msg, msg.media.value)
+            file_id = media.file_id
+            file = await client.download_media(file_id)
+            try: 
+                with open(file) as file_data:
+                    msgs=json.loads(file_data.read())
+            except:
+                await sts.edit("FAILED")
+                return await client.send_message(LOG_CHANNEL, "UNABLE TO OPEN FILE.")
+            os.remove(file)
+            BATCH_FILES[file_id] = msgs
             
-            if info.video or info.document:
+        filesarr = []
+        for msg in msgs:
+            channel_id = int(msg.get("channel_id"))
+            msgid = msg.get("msg_id")
+            info = await client.get_messages(channel_id, int(msgid))
+            if info.media:
+                file_type = info.media
+                file = getattr(info, file_type.value)
+                f_caption = getattr(info, 'caption', '')
+                if f_caption:
+                    f_caption = f_caption.html
+                old_title = getattr(file, "file_name", "")
+                title = formate_file_name(old_title)
+                size=get_size(int(file.file_size))
+                if BATCH_FILE_CAPTION:
+                    try:
+                        f_caption=BATCH_FILE_CAPTION.format(file_name= '' if title is None else title, file_size='' if size is None else size, file_caption='' if f_caption is None else f_caption)
+                    except:
+                        f_caption=f_caption
+                if f_caption is None:
+                    f_caption = f"{title}"
+                if STREAM_MODE == True:
+                    if info.video or info.document:
                         log_msg = info
                         fileName = {quote_plus(get_name(log_msg))}
                         stream = f"{URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                         download = f"{URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                         button = [[
-                            InlineKeyboardButton("• ᴅᴏᴡɴʟᴏᴀᴅ •", url=download),
-                            InlineKeyboardButton('• ᴡᴀᴛᴄʜ •', url=stream)
+                            InlineKeyboardButton("â€¢ á´…á´á´¡É´ÊŸá´á´€á´… â€¢", url=download),
+                            InlineKeyboardButton('â€¢ á´¡á´€á´›á´„Êœ â€¢', url=stream)
                         ],[
-                            InlineKeyboardButton("• ᴡᴀᴛᴄʜ ɪɴ ᴡᴇʙ ᴀᴘᴘ •", web_app=WebAppInfo(url=stream))
+                            InlineKeyboardButton("â€¢ á´¡á´€á´›á´„Êœ ÉªÉ´ á´¡á´‡Ê™ á´€á´˜á´˜ â€¢", web_app=WebAppInfo(url=stream))
                         ]]
                         reply_markup=InlineKeyboardMarkup(button)
-                
-            else:
+                else:
                     reply_markup = None
                 try:
                     msg = await info.copy(chat_id=message.from_user.id, caption=f_caption, protect_content=False, reply_markup=reply_markup)
@@ -267,7 +230,7 @@ for msg in msgs:
             await asyncio.sleep(1) 
         await sts.delete()
         if AUTO_DELETE_MODE == True:
-            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
+            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>â—ï¸â—ï¸â—ï¸IMPORTANTâ—ï¸ï¸â—ï¸â—ï¸</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> ðŸ«¥ <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
             await asyncio.sleep(AUTO_DELETE_TIME)
             for x in filesarr:
                 try:
@@ -313,10 +276,10 @@ for msg in msgs:
                     stream = f"{URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                     download = f"{URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
                     button = [[
-                        InlineKeyboardButton("• ᴅᴏᴡɴʟᴏᴀᴅ •", url=download),
-                        InlineKeyboardButton('• ᴡᴀᴛᴄʜ •', url=stream)
+                        InlineKeyboardButton("â€¢ á´…á´á´¡É´ÊŸá´á´€á´… â€¢", url=download),
+                        InlineKeyboardButton('â€¢ á´¡á´€á´›á´„Êœ â€¢', url=stream)
                     ],[
-                        InlineKeyboardButton("• ᴡᴀᴛᴄʜ ɪɴ ᴡᴇʙ ᴀᴘᴘ •", web_app=WebAppInfo(url=stream))
+                        InlineKeyboardButton("â€¢ á´¡á´€á´›á´„Êœ ÉªÉ´ á´¡á´‡Ê™ á´€á´˜á´˜ â€¢", web_app=WebAppInfo(url=stream))
                     ]]
                     reply_markup=InlineKeyboardMarkup(button)
             else:
@@ -325,7 +288,7 @@ for msg in msgs:
         else:
             del_msg = await msg.copy(chat_id=message.from_user.id, protect_content=False)
         if AUTO_DELETE_MODE == True:
-            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
+            k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>â—ï¸â—ï¸â—ï¸IMPORTANTâ—ï¸ï¸â—ï¸â—ï¸</u></b>\n\nThis Movie File/Video will be deleted in <b><u>{AUTO_DELETE} minutes</u> ðŸ«¥ <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</b>")
             await asyncio.sleep(AUTO_DELETE_TIME)
             try:
                 await del_msg.delete()
@@ -388,8 +351,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.delete()
     elif query.data == "about":
         buttons = [[
-            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
-            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('ðŸ”’ CÊŸá´sá´‡', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -410,16 +373,16 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "start":
         buttons = [[
-            InlineKeyboardButton('💝 ᴀᴍᴀᴢᴏɴ & ꜰʟɪᴘᴋᴀʀᴛ ʙᴇꜱᴛ ᴏꜰꜰᴇʀꜱ', url='https://t.me/amazon_flipkartt_offers')
+            InlineKeyboardButton('ðŸ’ á´€á´á´€á´¢á´É´ & êœ°ÊŸÉªá´˜á´‹á´€Ê€á´› Ê™á´‡êœ±á´› á´êœ°êœ°á´‡Ê€êœ±', url='https://t.me/amazon_flipkartt_offers')
         ],[
-            InlineKeyboardButton('🔍 sᴜᴘᴘᴏʀᴛ ɢʀᴏᴜᴘ', url='https://t.me/+7hhFYFo61m5hNzU9'),
-            InlineKeyboardButton('🤖 ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ', url='https://t.me/movie_loverzz')
+            InlineKeyboardButton('ðŸ” sá´œá´˜á´˜á´Ê€á´› É¢Ê€á´á´œá´˜', url='https://t.me/+7hhFYFo61m5hNzU9'),
+            InlineKeyboardButton('ðŸ¤– á´œá´˜á´…á´€á´›á´‡ á´„Êœá´€É´É´á´‡ÊŸ', url='https://t.me/movie_loverzz')
         ],[
-            InlineKeyboardButton('💁‍♀️ ʜᴇʟᴘ', callback_data='help'),
-            InlineKeyboardButton('😊 ᴀʙᴏᴜᴛ', callback_data='about')
+            InlineKeyboardButton('ðŸ’â€â™€ï¸ Êœá´‡ÊŸá´˜', callback_data='help'),
+            InlineKeyboardButton('ðŸ˜Š á´€Ê™á´á´œá´›', callback_data='about')
         ]]
         if CLONE_MODE == True:
-            buttons.append([InlineKeyboardButton('🤖 ᴄʀᴇᴀᴛᴇ ʏᴏᴜʀ ᴏᴡɴ ᴄʟᴏɴᴇ ʙᴏᴛ', callback_data='clone')])
+            buttons.append([InlineKeyboardButton('ðŸ¤– á´„Ê€á´‡á´€á´›á´‡ Êá´á´œÊ€ á´á´¡É´ á´„ÊŸá´É´á´‡ Ê™á´á´›', callback_data='clone')])
         reply_markup = InlineKeyboardMarkup(buttons)
         await client.edit_message_media(
             query.message.chat.id, 
@@ -439,8 +402,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "clone":
         buttons = [[
-            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
-            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('ðŸ”’ CÊŸá´sá´‡', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
@@ -460,8 +423,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "help":
         buttons = [[
-            InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
-            InlineKeyboardButton('🔒 Cʟᴏsᴇ', callback_data='close_data')
+            InlineKeyboardButton('Há´á´á´‡', callback_data='start'),
+            InlineKeyboardButton('ðŸ”’ CÊŸá´sá´‡', callback_data='close_data')
         ]]
         await client.edit_message_media(
             query.message.chat.id, 
