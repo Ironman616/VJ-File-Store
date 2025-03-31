@@ -6,7 +6,7 @@ import os
 import logging
 import random
 import asyncio
-from asyncio import coroutine  # For framework interface.
+import coroutine  # For framework interface.
 from validators import domain
 from Script import script
 from plugins.dbusers import db
