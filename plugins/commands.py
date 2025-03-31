@@ -229,10 +229,11 @@ for msg in msgs:
 
     except Exception as e:
         await client.send_message(LOG_CHANNEL, f"❌ Error processing file: {str(e)}")
-
-
-                if STREAM_MODE == True:
-                    if info.video or info.document:
+        
+        
+        if STREAM_MODE == True:
+            
+            if info.video or info.document:
                         log_msg = info
                         fileName = {quote_plus(get_name(log_msg))}
                         stream = f"{URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
